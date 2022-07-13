@@ -1,0 +1,61 @@
+CREATE DATABASE CarRent
+
+CREATE TABLE Cars (
+	CarID int NOT NULL AUTO_INCREMENT,
+	Brand varchar(255) NOT NULL,
+	CarYear int NOT NULL,
+	Class varchar(1),
+	CustomerID int,
+	Variant varchar(255) NOT NULL,
+	PRIMARY KEY (CarID),
+	FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+INSERT INTO Cars (Brand, CarYear, Class, CustomerID, Variant) VALUES ('VW Passat', 2021, 'D', 2, 'Kombi'), ('Ford Mondeo', 2019, 'D', 7, 'Kombi'), ('Toyota Yaris', 2020, 'B', 1, '5D'), ('VW Golf', 2020, 'C', 6, 'Hatchback'), ('Audi A6', 2021, 'E', 3, 'Sedan'), ('Ford Fiesta', 2020, 'B', NULL, '3D'), ('Toyota Rav4', 2020, 'J', NULL, 'SUV'), ('Lexus NX300H', 2022, 'J', 5, 'SUV'), ('Toyota Corolla', 2020, 'C', 4, 'Hatchback'), ('Lexus ES300H', 2022, 'E', NULL, 'Sedan');
+
+SELECT * FROM Cars
+SELECT DISTINCT CarYear FROM Cars
+SELECT * FROM Cars WHERE Variant = 'Kombi'
+SELECT * FROM Cars WHERE Class='E' AND CarYear=2022
+SELECT * FROM Cars WHERE Variant='Kombi' OR Variant='Sedan'
+SELECT * FROM Cars WHERE CarYear=2020 AND (Class='B' OR Class='J')
+SELECT * FROM Cars WHERE NOT Brand LIKE ('A%')
+SELECT * FROM Cars WHERE CarYear > 2021
+SELECT * FROM Cars WHERE CarYear <= 2020
+SELECT * FROM Cars WHERE CarYear BETWEEN 2020 AND 2022
+SELECT * FROM Cars WHERE Brand LIKE 'Toyota%'
+SELECT * FROM Cars WHERE Class IN ('E', 'J')
+SELECT * FROM Cars ORDER BY CarYear DESC 
+SELECT * FROM Cars WHERE CustomerID IS NULL
+INSERT INTO Cars (Brand, CarYear, Class, CustomerID, Variant) VALUES ('Mazda RX-8', 2007, 'S', NULL, 'Coupe'), ('Mazda MX-5', 2021, NULL, NULL, NULL)
+UPDATE Cars SET Class = 'H', Variant = 'Cabriolet' WHERE CarID=12
+DELETE FROM Cars WHERE CarID=11
+SELECT * FROM Cars ORDER BY CarYear DESC LIMIT 5
+SELECT MIN(CarYear) AS OldCars, Brand FROM Cars 
+SELECT MAX(CarYear) AS YoungCars, Brand FROM Cars
+SELECT COUNT(CarID) AS AllCars FROM Cars
+SELECT AVG(CarYear) AS AvgCarYear FROM Cars
+SELECT * FROM Cars WHERE CarYear BETWEEN 2019 AND 2021 AND Class NOT IN ('B', 'C') ORDER BY CarYear
+SELECT Cars.CarID, Cars.Brand, Customers.CustomerID, Customers.LastName FROM Cars INNER JOIN Customers ON Cars.CustomerID = Customers.CustomerID
+SELECT Customers.LastName, Cars.CarID, Cars.Brand FROM Cars LEFT JOIN Customers ON Customers.CustomerID = Cars.CustomerID ORDER BY Cars.CarID
+SELECT Customers.LastName, Customers.RentDay, Cars.Brand, Cars.CarYear FROM Customers RIGHT JOIN Cars ON Cars.CustomerID = Customers.CustomerID ORDER BY Cars.CarYear
+
+----
+
+CREATE TABLE Customers (
+	CustomerID int NOT NULL AUTO_INCREMENT,
+	LastName varchar(255) NOT NULL,
+	RentDay int NOT NULL,
+	Age int,
+	Country varchar(255) NOT NULL,
+	DrivingLicense varchar(255) NOT NULL,
+	PRIMARY KEY (CustomerID)
+);
+
+INSERT INTO Customers (LastName, RentDay, Age, Country, DrivingLicense) VALUES ('Jagna Boryna', 2, 31, 'Poland', 'PL123456'), ('Hans Kloss', 6, 55, 'Germany', 'DEJ23'), ('Nikodem Dyzma', 5, 42, 'Poland', 'PL1000000'), ('Rodion Roskolnikov', 10, 21, 'Russia', 'RU0507'), ('Izabela Lecka', 5, 35, 'Poland', 'PL33333'), ('Wiktor Forst', 7, 40, 'Poland', 'PL007'), ('Jacek Soplica', 2, 63, 'Lithuania', 'LT1791');
+
+SELECT * FROM Customers WHERE Country LIKE '%ss%'
+SELECT * FROM Customers WHERE DrivingLicense LIKE 'PL%'
+SELECT * FROM Customers WHERE NOT Country LIKE 'P%d'
+SELECT * FROM Customers WHERE CustomerID IN (SELECT CustomerID FROM Cars)
+SELECT COUNT(CustomerID), Country FROM Customers GROUP BY Country ORDER BY COUNT(CustomerID) ASC
